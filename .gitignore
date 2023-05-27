@@ -10,6 +10,7 @@
 
 # production
 /build
+/reactcert
 
 # misc
 .DS_Store
