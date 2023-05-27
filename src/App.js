@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import './styles.css';
@@ -10,6 +10,7 @@ const App = () => {
   const [uploadedImage, setUploadedImage] = useState(null);
   const [question, setQuestion] = useState('');
   const [prediction, setPrediction] = useState('');
+  const fileInputRef = useRef();
 
   // image upload handler
   const handleImageUpload = (event) => {
@@ -28,6 +29,11 @@ const App = () => {
     }
   };
 
+  // button click handler
+  const handleImageClick = () => {
+    fileInputRef.current.click();
+  }
+
   // predict request handler
   async function handlePredict() {
     // API endpoint for prediction
@@ -39,19 +45,22 @@ const App = () => {
     formData.append('image', uploadedImage);
     formData.append('question', question);
 
+    console.log(uploadedImage)
+    console.log(question)
+
     // send a POST request to the API
     await fetch(API_ENDPOINT, {
       method: "POST",
       body: formData,
     })
-    .then(response => response.json())
-    .then(responseData => {
-      // set the model prediction
-      setPrediction(responseData['prediction'])
-    })
-    .catch(error => {
-      console.error(error)
-    })
+      .then(response => response.json())
+      .then(responseData => {
+        // set the model prediction
+        setPrediction(responseData['prediction'])
+      })
+      .catch(error => {
+        console.error(error)
+      })
   };
 
   return (
@@ -60,41 +69,50 @@ const App = () => {
       <div className="content">
         <div className='center'>
           <div className="image-placeholder">
-            {imageSelected ? (
-              <img className="selected-image" src={imageSelected} alt="обрано" />
-            ) : (
-              <div className="placeholder-content">
+            <input
+              className='image-uploader'
+              type="file"
+              accept="image/*"
+              ref={fileInputRef}
+              style={{ display: 'none' }}
+              onChange={handleImageUpload}
+            />
+            {imageSelected ?
+              (
                 <img
+                  htmlFor="fileInput"
+                  className="static-image"
+                  src={imageSelected}
+                  onClick={handleImageClick}
+                  alt="оберіть зображення"
+                  style={{ cursor: 'pointer' }}
+                />
+              ) : (
+                <img
+                  htmlFor="fileInput"
                   className="static-image"
                   src={placeholderImage}
-                  alt="оберіть"
+                  onClick={handleImageClick}
+                  alt="зображення обрано"
+                  style={{ cursor: 'pointer' }}
                 />
-              </div>
-            )}
-          </div>
-          <div>
-          <label>fdsfsdfs</label>
-          <input
-            className='image-uploader'
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            lang='eng'
-          />
-          <button>fdsfsd</button>
+              )}
           </div>
           <textarea
             className="question-input"
-            placeholder="Enter your question"
+            placeholder="Запитання до картинки"
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
           />
-          <button className="predict-button" onClick={handlePredict}>
-            Predict
+          <button
+            className="predict-button"
+            onClick={handlePredict}
+          >
+            Отримати передбачення
           </button>
           <textarea
             className="response-output"
-            placeholder="Response from API"
+            placeholder="Результат передбачення"
             value={prediction}
             readOnly
           />

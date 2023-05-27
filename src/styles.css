@@ -5,7 +5,7 @@ html,
 body {
     height: 100%;
     margin: 0;
-    background: #6395F3;
+    background: #03befc;
 }
 
 .app {
@@ -95,7 +95,7 @@ body {
 }
 
 .predict-button {
-    width: 200px;
+    width: 300px;
     height: 30px;
     margin-top: 10px;
 }
