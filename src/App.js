@@ -39,6 +39,9 @@ const App = () => {
     // API endpoint for prediction
     const API_ENDPOINT = `https://localhost:8000/predict`;
 
+    // clear prediction
+    setPrediction('...')
+
     // create a FormData object
     const formData = new FormData();
 
